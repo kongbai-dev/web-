@@ -1,0 +1,4 @@
+import {Heart,MapPin} from 'lucide-react'
+import {Link} from 'react-router-dom'
+import {imageError,money} from '../api'
+export default function ProductCard({p}){return <Link className="product-card" to={`/products/${p.id}`}><div className="card-image">{p.imageUrls?.[0]?<img src={p.imageUrls[0]} onError={imageError} alt={p.title}/>:<div className="image-fallback">青禾好物</div>}<span className="trade-tag">{p.tradeType==='GIFT'?'赠送':p.tradeType==='EXCHANGE'?'交换':'出售'}</span></div><div className="card-body"><h3>{p.title}</h3><div className="price"><small>¥</small>{money(p.price)}{p.originalPrice&&<del>¥{money(p.originalPrice)}</del>}</div><div className="card-meta"><span>{p.conditionLevel}</span><span><MapPin size={13}/>{p.tradeLocation}</span></div><div className="card-bottom"><span>{p.seller?.nickname}</span><span><Heart size={14}/>{p.favoriteCount}</span></div></div></Link>}

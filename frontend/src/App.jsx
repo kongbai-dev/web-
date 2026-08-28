@@ -1,0 +1,12 @@
+import {Route,Routes} from 'react-router-dom'
+import Layout from './components/Layout'
+import Protected from './components/Protected'
+import Home from './pages/Home'
+import Products from './pages/Products'
+import ProductDetail from './pages/ProductDetail'
+import ProductForm from './pages/ProductForm'
+import AuthPage from './pages/AuthPage'
+import Orders from './pages/Orders'
+import Profile from './pages/Profile'
+import Admin from './pages/Admin'
+export default function App(){return <Layout><Routes><Route path="/" element={<Home/>}/><Route path="/products" element={<Products/>}/><Route path="/products/:id" element={<ProductDetail/>}/><Route path="/login" element={<AuthPage/>}/><Route path="/register" element={<AuthPage register/>}/><Route path="/products/create" element={<Protected><ProductForm/></Protected>}/><Route path="/products/:id/edit" element={<Protected><ProductForm/></Protected>}/><Route path="/orders" element={<Protected><Orders/></Protected>}/><Route path="/profile" element={<Protected><Profile/></Protected>}/><Route path="/favorites" element={<Protected><Profile tab="favorites"/></Protected>}/><Route path="/history" element={<Protected><Profile tab="history"/></Protected>}/><Route path="/my-products" element={<Protected><Profile tab="products"/></Protected>}/><Route path="/admin" element={<Protected admin><Admin/></Protected>}/><Route path="*" element={<div className="empty page"><b>404</b><p>页面走丢了</p></div>}/></Routes></Layout>}
