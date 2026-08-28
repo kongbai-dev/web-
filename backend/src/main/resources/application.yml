@@ -1,0 +1,48 @@
+server:
+  port: 8080
+spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 6MB
+  datasource:
+    url: jdbc:h2:file:./data/campus-market;MODE=MySQL;DATABASE_TO_LOWER=TRUE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jackson:
+    default-property-inclusion: non_null
+app:
+  jwt-secret: campus-market-course-project-secret-key-2026-must-be-long
+  jwt-expiration-hours: 24
+  seed-demo-data: true
+  upload-dir: ./uploads
+  cors-allowed-origins: http://localhost:5173,http://127.0.0.1:5173
+logging:
+  level:
+    org.hibernate.SQL: warn
+
+---
+spring:
+  config:
+    activate:
+      on-profile: mysql
+  datasource:
+    url: jdbc:mysql://localhost:3306/campus_market?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&createDatabaseIfNotExist=true
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+  h2:
+    console:
+      enabled: false

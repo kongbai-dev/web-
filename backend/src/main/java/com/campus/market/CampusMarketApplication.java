@@ -1,0 +1,12 @@
+package com.campus.market;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration;
+
+@SpringBootApplication(exclude = UserDetailsServiceAutoConfiguration.class)
+public class CampusMarketApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(CampusMarketApplication.class, args);
+    }
+}
