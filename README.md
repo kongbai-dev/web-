@@ -49,13 +49,24 @@ npm run dev
 
 ## 使用 MySQL
 
-先创建或允许自动创建 `campus_market` 数据库，然后修改 `backend/src/main/resources/application.yml` 中 mysql profile 的账号密码：
+先创建或允许自动创建 `campus_market` 数据库，再通过 `DB_URL`、`DB_USERNAME`、`DB_PASSWORD` 环境变量传入连接信息：
 
 ```powershell
 cd backend
 mvn package -DskipTests
 java -jar target/campus-market-1.0.0.jar --spring.profiles.active=mysql
 ```
+
+## Docker Compose（Linux/AMD64）
+
+仓库已提供 Spring Boot、React/Nginx 的多阶段 Dockerfile，以及 MySQL 8.4 编排配置：
+
+```powershell
+docker compose build
+docker compose up -d
+```
+
+访问 <http://localhost:8080>。MySQL 使用命名卷 `mysql-data` 持久化，初始化脚本位于 `database/init`；上传图片挂载到 `resources/uploads`。课程提交所需的离线镜像包、`README.txt` 与性能/竞态报告位于 `deliverables/campus-market-x64`（大体积 `.tar`/`.zip` 不纳入 Git）。
 
 ## 验证命令
 
@@ -67,6 +78,6 @@ cd ../frontend
 npm run build
 ```
 
-后端集成测试包含 3 个场景：以买家、卖家两个身份跑通完整订单状态机并验证商品最终变为已售出；验证未登录接口的统一响应；验证非法价格拦截和本地图片上传。
+后端集成测试包含 5 个场景：完整订单状态机、未登录统一响应、参数与图片上传校验、同一商品并发下单互斥，以及 20 次并发浏览计数不丢失。
 
 本地上传图片保存在 `backend/uploads/products`，单张最大 5MB，支持 JPG、PNG、WebP 和 GIF。该运行时目录已加入 `.gitignore`。

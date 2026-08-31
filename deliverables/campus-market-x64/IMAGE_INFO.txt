@@ -1,0 +1,21 @@
+校园二手交易平台 Linux/AMD64 镜像清单
+=====================================
+
+campus-market-backend:1.0.0-amd64
+  ID: sha256:280673ff7f96061a5eded78a70e8dc2b65ef36706abaec08064211e7b8448a3a
+  Platform: linux/amd64
+  Size: 149035646 bytes
+
+campus-market-frontend:1.0.0-amd64
+  ID: sha256:7e4347e43caf7c234448ae0f6cba5998e861c7f0f93147f58e323b4ed82a6687
+  Platform: linux/amd64
+  Size: 21089343 bytes
+
+mysql:8.4
+  ID: sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb
+  Platform: linux/amd64
+  Size: 238990497 bytes
+
+离线包：images/campus-market-x64-images.tar
+离线包大小：424899584 bytes
+离线导入验证：通过（docker load 成功识别以上三张镜像）
