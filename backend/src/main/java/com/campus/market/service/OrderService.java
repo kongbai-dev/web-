@@ -24,7 +24,7 @@ public class OrderService {
         MarketOrder o=new MarketOrder();o.orderNo="ORD"+LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))+UUID.randomUUID().toString().substring(0,6).toUpperCase();o.product=p;o.buyer=buyer;o.seller=p.seller;o.amount=p.price;o.tradeLocation=r.tradeLocation()==null?p.tradeLocation:r.tradeLocation();o.buyerNote=r.buyerNote();o.status=OrderStatus.PENDING_CONFIRM;p.status=ProductStatus.RESERVED;orders.save(o);return mapper.order(o,buyer.id); }
     public List<OrderView> mine(){User u=current.require();return orders.findMine(u.id).stream().map(o->mapper.order(o,u.id)).toList();}
     public OrderView detail(Long id){User u=current.require();MarketOrder o=find(id);participant(o,u);return mapper.order(o,u.id);}
-    @Transactional public OrderView action(Long id,String action){User u=current.require();MarketOrder o=orders.findForUpdate(id).orElseThrow(()->new BusinessException(40402,"订单不存在"));LocalDateTime now=LocalDateTime.now();
+    @Transactional public OrderView action(Long id,String action){User u=current.require();MarketOrder o=orders.findForUpdate(id).orElseThrow(()->new BusinessException(40402,"订单不存在"));o.product=products.findForUpdate(o.product.id).orElseThrow(()->new BusinessException(40401,"商品不存在"));LocalDateTime now=LocalDateTime.now();
         switch(action){
             case "confirm"->{seller(o,u);state(o,OrderStatus.PENDING_CONFIRM);o.status=OrderStatus.PENDING_PAYMENT;o.confirmedAt=now;}
             case "pay"->{buyer(o,u);state(o,OrderStatus.PENDING_PAYMENT);o.status=OrderStatus.PENDING_DELIVERY;o.paidAt=now;}

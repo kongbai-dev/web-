@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity @Table(name="products", indexes={@Index(name="idx_product_status", columnList="status"), @Index(name="idx_product_created", columnList="createdAt")})
+@Entity @Table(name="products", indexes={@Index(name="idx_product_status_created", columnList="status,created_at"),@Index(name="idx_product_category_status", columnList="category_id,status"),@Index(name="idx_product_seller_created", columnList="seller_id,created_at")})
 public class Product {
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY) public Long id;
     @ManyToOne(optional=false, fetch=FetchType.EAGER) public User seller;
@@ -22,7 +22,11 @@ public class Product {
     @Enumerated(EnumType.STRING) @Column(nullable=false) public ProductStatus status = ProductStatus.ON_SALE;
     public Integer viewCount = 0;
     public Integer favoriteCount = 0;
-    @ElementCollection(fetch=FetchType.EAGER) @Column(name="image_url", length=500) public List<String> imageUrls = new ArrayList<>();
+    @ElementCollection(fetch=FetchType.EAGER)
+    @CollectionTable(name="product_image_urls", joinColumns=@JoinColumn(name="product_id"))
+    @OrderColumn(name="image_order")
+    @Column(name="image_url", length=500)
+    public List<String> imageUrls = new ArrayList<>();
     public LocalDateTime createdAt = LocalDateTime.now();
     public LocalDateTime updatedAt = LocalDateTime.now();
 }

@@ -14,6 +14,9 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     Optional<Product> findDetail(@Param("id") Long id);
     @Lock(LockModeType.PESSIMISTIC_WRITE) @Query("select p from Product p where p.id=:id")
     Optional<Product> findForUpdate(@Param("id") Long id);
+    @Modifying(clearAutomatically=true, flushAutomatically=true)
+    @Query("update Product p set p.viewCount=p.viewCount+1 where p.id=:id")
+    int incrementViewCount(@Param("id") Long id);
     @Query("select p from Product p where (:keyword is null or lower(p.title) like lower(concat('%',:keyword,'%')) or lower(p.description) like lower(concat('%',:keyword,'%'))) and (:categoryId is null or p.category.id=:categoryId) and (:status is null or p.status=:status) and (:minPrice is null or p.price>=:minPrice) and (:maxPrice is null or p.price<=:maxPrice)")
     Page<Product> search(@Param("keyword") String keyword, @Param("categoryId") Long categoryId, @Param("status") ProductStatus status, @Param("minPrice") BigDecimal minPrice, @Param("maxPrice") BigDecimal maxPrice, Pageable pageable);
     Page<Product> findBySellerId(Long sellerId, Pageable pageable);
