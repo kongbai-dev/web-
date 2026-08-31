@@ -24,11 +24,11 @@ spring:
   jackson:
     default-property-inclusion: non_null
 app:
-  jwt-secret: campus-market-course-project-secret-key-2026-must-be-long
-  jwt-expiration-hours: 24
-  seed-demo-data: true
-  upload-dir: ./uploads
-  cors-allowed-origins: http://localhost:5173,http://127.0.0.1:5173
+  jwt-secret: ${JWT_SECRET:campus-market-course-project-secret-key-2026-must-be-long}
+  jwt-expiration-hours: ${JWT_EXPIRATION_HOURS:24}
+  seed-demo-data: ${SEED_DEMO_DATA:true}
+  upload-dir: ${APP_UPLOAD_DIR:./uploads}
+  cors-allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
 logging:
   level:
     org.hibernate.SQL: warn
@@ -39,10 +39,10 @@ spring:
     activate:
       on-profile: mysql
   datasource:
-    url: jdbc:mysql://localhost:3306/campus_market?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&createDatabaseIfNotExist=true
+    url: ${DB_URL:jdbc:mysql://localhost:3306/campus_market?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false}
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: root
+    username: ${DB_USERNAME:campus_market}
+    password: ${DB_PASSWORD:campus_market_2026}
   h2:
     console:
       enabled: false

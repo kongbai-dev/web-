@@ -6,3 +6,8 @@ frontend/dist/
 .idea/
 .vscode/
 *.log
+deliverables/**/*.tar
+deliverables/**/*.zip
+deliverables/**/*.zip.sha256
+deliverables/**/database/mysql-data/
+deliverables/**/rendered-report/
