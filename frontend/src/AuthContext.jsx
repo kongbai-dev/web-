@@ -7,5 +7,5 @@ export function AuthProvider({children}){const [user,setUser]=useState(storedUse
  const login=data=>{localStorage.setItem('token',data.token);localStorage.setItem('user',JSON.stringify(data.user));setUser(data.user)}
  const logout=()=>{localStorage.removeItem('token');localStorage.removeItem('user');setUser(null)}
  const refresh=async()=>{try{const u=await api.get('/users/me');localStorage.setItem('user',JSON.stringify(u));setUser(u)}catch{} }
- return <C.Provider value={{user,login,logout,refresh,notify:m=>window.dispatchEvent(new CustomEvent('app-error',{detail:m}))}}>{children}{toast&&<div className="toast">{toast}</div>}</C.Provider>}
+ return <C.Provider value={{user,login,logout,refresh,notify:m=>window.dispatchEvent(new CustomEvent('app-error',{detail:m}))}}>{children}{toast&&<div className="toast" role="status" aria-live="polite">{toast}</div>}</C.Provider>}
 export const useAuth=()=>useContext(C)

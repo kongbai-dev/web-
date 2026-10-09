@@ -20,7 +20,10 @@ export default function ProductForm() {
     if (id) api.get(`/products/${id}`).then(product => setForm({...product, categoryId:product.category.id, imageUrl:product.imageUrls?.[0] || ''}))
   }, [id])
 
-  const change = event => setForm({...form, [event.target.name]:event.target.value})
+  const change = event => {
+    const {name,value}=event.target
+    setForm(current=>({...current,[name]:value,...(name==='tradeType'&&value==='GIFT'?{price:'0'}:{})}))
+  }
   const upload = async event => {
     const file = event.target.files?.[0]
     if (!file) return
@@ -65,10 +68,10 @@ export default function ProductForm() {
       <section>
         <h3><i>2</i>价格与图片</h3>
         <div className="form-grid">
-          <label><span>出售价格 *</span><input type="number" min="0" step="0.01" name="price" value={form.price} onChange={change} required placeholder="¥ 0.00"/></label>
+          <label><span>{form.tradeType==='GIFT'?'赠送价格':'出售价格'} *</span><input type="number" min="0" step="0.01" name="price" value={form.price} onChange={change} required disabled={form.tradeType==='GIFT'} placeholder="¥ 0.00"/></label>
           <label><span>购入原价</span><input type="number" min="0" step="0.01" name="originalPrice" value={form.originalPrice} onChange={change} placeholder="选填"/></label>
         </div>
-        <label className="full"><span>商品图片 URL</span><div className="image-url"><ImagePlus/><input name="imageUrl" value={form.imageUrl} onChange={change} placeholder="粘贴图片地址，或使用下方本地上传"/></div></label>
+        <label className="full"><span>商品图片 URL</span><div className="image-url"><ImagePlus/><input name="imageUrl" value={form.imageUrl} onChange={change} maxLength="500" placeholder="粘贴图片地址，或使用下方本地上传"/></div></label>
         <div className="upload-row">
           <label className={`upload-button ${uploading ? 'disabled' : ''}`}>{uploading ? <LoaderCircle className="spin"/> : <Upload/>}{uploading ? '正在上传…' : '从本地选择图片'}<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" onChange={upload} disabled={uploading}/></label>
           <small>支持 JPG、PNG、WebP、GIF，最大 5MB</small>
