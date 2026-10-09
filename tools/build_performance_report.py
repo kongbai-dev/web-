@@ -309,8 +309,8 @@ def build_document():
     for label, value in (
         ("系统版本", "1.0.0"),
         ("技术架构", "React 19 / Spring Boot 3.3 / MySQL 8.4 / Nginx"),
-        ("验证日期", "2026 年 9 月 1 日"),
-        ("验证结论", "5 项集成测试全部通过，含 2 项并发回归测试"),
+        ("验证日期", "2026 年 10 月 10 日"),
+        ("验证结论", "8 项集成测试全部通过，含 2 项并发回归测试"),
     ):
         p = doc.add_paragraph()
         p.paragraph_format.space_after = Pt(2)

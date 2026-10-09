@@ -2,14 +2,14 @@
 =====================================
 
 campus-market-backend:1.0.0-amd64
-  ID: sha256:280673ff7f96061a5eded78a70e8dc2b65ef36706abaec08064211e7b8448a3a
+  ID: sha256:913c82256ef95cffb269d88301961afc591e7c42c9b6f4917d971fb7d0d88b40
   Platform: linux/amd64
-  Size: 149035646 bytes
+  Size: 149037841 bytes
 
 campus-market-frontend:1.0.0-amd64
-  ID: sha256:7e4347e43caf7c234448ae0f6cba5998e861c7f0f93147f58e323b4ed82a6687
+  ID: sha256:3966cddfb62f9806d985a277626fe874c18d7b6f60f00fd8740360a05b75bc95
   Platform: linux/amd64
-  Size: 21089343 bytes
+  Size: 21094148 bytes
 
 mysql:8.4
   ID: sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb
@@ -17,5 +17,5 @@ mysql:8.4
   Size: 238990497 bytes
 
 离线包：images/campus-market-x64-images.tar
-离线包大小：424899584 bytes
+离线包大小：424917504 bytes
 离线导入验证：通过（docker load 成功识别以上三张镜像）
