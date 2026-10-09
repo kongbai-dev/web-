@@ -16,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import java.util.concurrent.*;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 @SpringBootTest @AutoConfigureMockMvc
@@ -52,6 +53,32 @@ class OrderFlowIntegrationTest {
         MockMultipartFile image=new MockMultipartFile("file","campus.png","image/png",new byte[]{1,2,3,4});
         mvc.perform(multipart("/api/uploads/images").file(image).header("Authorization","Bearer "+token))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.data.url").value(org.hamcrest.Matchers.startsWith("/uploads/products/")));
+    }
+    @Test void normalizesPaginationAndRejectsInvalidPriceRange() throws Exception {
+        mvc.perform(get("/api/products").param("page","-2").param("size","0"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.size").value(12));
+        mvc.perform(get("/api/products").param("minPrice","100").param("maxPrice","10"))
+                .andExpect(status().isBadRequest()).andExpect(jsonPath("$.message").value("最低价不能高于最高价"));
+    }
+    @Test void rejectsUnknownAdminActionsAndInactiveCategories() throws Exception {
+        String admin=login("admin"),student=login("student");
+        mvc.perform(post("/api/admin/users/1/toggle").header("Authorization","Bearer "+admin))
+                .andExpect(status().isBadRequest()).andExpect(jsonPath("$.message").value("不支持的用户操作"));
+        String category=mvc.perform(post("/api/admin/categories").header("Authorization","Bearer "+admin).contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"name\":\"回归测试停用分类\",\"active\":false}"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        long categoryId=json.readTree(category).path("data").path("id").asLong();
+        mvc.perform(post("/api/products").header("Authorization","Bearer "+student).contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"title\":\"不应发布的商品\",\"categoryId\":"+categoryId+",\"price\":1}"))
+                .andExpect(status().isBadRequest()).andExpect(jsonPath("$.message").value("所选分类已停用"));
+    }
+    @Test void storesFiveHundredCharacterReportDescription() throws Exception {
+        String student=login("student");
+        Long productId=products.findAll().stream().filter(p->p.seller.username.equals("seller")).findFirst().orElseThrow().id;
+        String description="详".repeat(500);
+        mvc.perform(post("/api/products/"+productId+"/reports").header("Authorization","Bearer "+student).contentType(MediaType.APPLICATION_JSON)
+                        .content(json.writeValueAsString(Map.of("reason","回归测试","description",description))))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.data.description").value(description));
     }
     @Test void concurrentBuyersCannotCreateTwoOrdersForOneProduct() throws Exception {
         String buyerOne=login("student");

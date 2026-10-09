@@ -10,6 +10,6 @@ public class Review {
     @ManyToOne(optional=false) @JoinColumn(name="reviewer_id") public User reviewer;
     @ManyToOne(optional=false) public User targetUser;
     public Integer rating;
-    public String content;
+    @Column(length=500) public String content;
     public LocalDateTime createdAt = LocalDateTime.now();
 }

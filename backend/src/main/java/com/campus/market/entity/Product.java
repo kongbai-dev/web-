@@ -24,7 +24,7 @@ public class Product {
     public Integer favoriteCount = 0;
     @ElementCollection(fetch=FetchType.EAGER)
     @CollectionTable(name="product_image_urls", joinColumns=@JoinColumn(name="product_id"))
-    @OrderColumn(name="image_order")
+    @OrderColumn(name="image_order", columnDefinition="integer default 0")
     @Column(name="image_url", length=500)
     public List<String> imageUrls = new ArrayList<>();
     public LocalDateTime createdAt = LocalDateTime.now();
