@@ -10,5 +10,6 @@ frontend/dist/
 deliverables/**/*.tar
 deliverables/**/*.zip
 deliverables/**/*.zip.sha256
+deliverables/**/video/*.mp4
 deliverables/**/database/mysql-data/
 deliverables/**/rendered-report/

@@ -19,6 +19,7 @@ images/campus-market-x64-images.tar    Linux/AMD64 镜像离线包
 docker-compose.yml                     一键编排文件
 database/init/01-schema.sql            MySQL 8 数据库结构脚本
 resources/uploads/                     用户上传图片持久化挂载目录
+video/南小集校园二手交易平台-功能使用演示.mp4  功能使用演示录屏
 docs/性能问题与竞态资源问题处理报告.docx  正式报告
 docs/性能问题与竞态资源问题处理报告.md    报告源稿
 SHA256SUMS.txt                          镜像包与关键文件校验值
