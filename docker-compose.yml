@@ -39,6 +39,14 @@ services:
       SEED_DEMO_DATA: "true"
       CORS_ALLOWED_ORIGINS: http://localhost:8080,http://127.0.0.1:8080
       JWT_SECRET: campus-market-compose-secret-key-2026-change-before-production
+      MAIL_HOST: ${MAIL_HOST:-smtp.qq.com}
+      MAIL_PORT: ${MAIL_PORT:-465}
+      MAIL_USERNAME: ${MAIL_USERNAME:-}
+      MAIL_PASSWORD: ${MAIL_PASSWORD:-}
+      MAIL_FROM: ${MAIL_FROM:-}
+      MAIL_SMTP_AUTH: ${MAIL_SMTP_AUTH:-true}
+      MAIL_SMTP_SSL_ENABLE: ${MAIL_SMTP_SSL_ENABLE:-true}
+      MAIL_SMTP_STARTTLS_ENABLE: ${MAIL_SMTP_STARTTLS_ENABLE:-false}
       TZ: Asia/Shanghai
     volumes:
       - ./resources/uploads:/app/uploads

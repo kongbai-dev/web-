@@ -15,9 +15,9 @@ import java.util.*;
 public class DemoDataConfig {
     @Bean CommandLineRunner seed(@Value("${app.seed-demo-data:true}")boolean enabled,UserRepository users,CategoryRepository cats,ProductRepository products,ReportRepository reports,PasswordEncoder encoder){return args->{
         if(!enabled||users.count()>0)return;
-        User admin=user("admin","管理员","20260000",Role.ADMIN,encoder);admin.campus="平台运营中心";users.save(admin);
-        User seller=user("seller","林小满","20260101",Role.USER,encoder);seller.campus="东校区";seller.dormArea="松园 3 栋";seller.bio="毕业季清理闲置，支持校内面交";users.save(seller);
-        User buyer=user("student","陈同学","20260202",Role.USER,encoder);buyer.campus="西校区";buyer.dormArea="竹园 2 栋";users.save(buyer);
+        User admin=user("admin","管理员","20260000",Role.ADMIN,encoder);admin.email="admin@nanxiaoji.local";admin.campus="平台运营中心";users.save(admin);
+        User seller=user("seller","林小满","20260101",Role.USER,encoder);seller.email="seller@nanxiaoji.local";seller.campus="东校区";seller.dormArea="松园 3 栋";seller.bio="毕业季清理闲置，支持校内面交";users.save(seller);
+        User buyer=user("student","陈同学","20260202",Role.USER,encoder);buyer.email="student@nanxiaoji.local";buyer.campus="西校区";buyer.dormArea="竹园 2 栋";users.save(buyer);
         String[] names={"教材书籍","数码产品","电脑配件","生活用品","宿舍用品","文体用品","服饰鞋包","交通工具","票券卡券","其他"};List<Category> list=new ArrayList<>();for(int i=0;i<names.length;i++){Category c=new Category();c.name=names[i];c.sortOrder=i;list.add(c);}cats.saveAll(list);
         add(products,seller,list.get(2),"RK87 机械键盘 · 茶轴","九成新机械键盘，键帽已清洁，配原装数据线。适合宿舍学习与游戏。","199","119","九成新","图书馆南门",101);
         add(products,seller,list.get(0),"高等数学同济第七版上下册","少量课堂笔记，无缺页，期末复习非常实用，两册一起出。","89","28","八成新","第三教学楼",102);

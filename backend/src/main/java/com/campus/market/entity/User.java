@@ -13,7 +13,7 @@ public class User {
     @Column(unique=true, length=30) public String studentNo;
     public String nickname;
     public String avatar;
-    public String email;
+    @Column(unique=true, length=100) public String email;
     public String phone;
     public String campus;
     public String dormArea;

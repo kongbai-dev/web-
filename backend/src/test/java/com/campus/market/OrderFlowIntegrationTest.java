@@ -8,21 +8,28 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.mockito.ArgumentCaptor;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import java.util.concurrent.*;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 @SpringBootTest @AutoConfigureMockMvc
-@TestPropertySource(properties={"spring.datasource.url=jdbc:h2:mem:market-test;MODE=MySQL","spring.jpa.hibernate.ddl-auto=create-drop","app.upload-dir=target/test-uploads"})
+@TestPropertySource(properties={"spring.datasource.url=jdbc:h2:mem:market-test;MODE=MySQL","spring.jpa.hibernate.ddl-auto=create-drop","app.upload-dir=target/test-uploads","app.mail.from=no-reply@example.com"})
 class OrderFlowIntegrationTest {
     @Autowired MockMvc mvc; @Autowired ObjectMapper json; @Autowired ProductRepository products;
+    @MockBean JavaMailSender mailSender;
     private String login(String username) throws Exception {
         String body=mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON).content("{\"username\":\""+username+"\",\"password\":\"123456\"}"))
                 .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
@@ -44,6 +51,35 @@ class OrderFlowIntegrationTest {
                 .andExpect(status().isUnauthorized())
                 .andExpect(jsonPath("$.code").value(40101))
                 .andExpect(jsonPath("$.message").value("请先登录"));
+    }
+    @Test void registersWithEmailCodeAndEnforcesSendCooldown() throws Exception {
+        String email="New.Student@Example.com";
+        mvc.perform(post("/api/auth/email-code").contentType(MediaType.APPLICATION_JSON)
+                        .content(json.writeValueAsString(Map.of("email",email))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.retryAfterSeconds").value(60))
+                .andExpect(jsonPath("$.data.expiresInSeconds").value(600));
+
+        ArgumentCaptor<SimpleMailMessage> message=ArgumentCaptor.forClass(SimpleMailMessage.class);
+        verify(mailSender).send(message.capture());
+        var matcher=Pattern.compile("(?<!\\d)\\d{6}(?!\\d)").matcher(message.getValue().getText());
+        assertThat(matcher.find()).isTrue();
+        String code=matcher.group();
+
+        mvc.perform(post("/api/auth/email-code").contentType(MediaType.APPLICATION_JSON)
+                        .content(json.writeValueAsString(Map.of("email",email))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message",org.hamcrest.Matchers.containsString("秒后重新发送")));
+        Map<String,String> registration=Map.of("username","mailstudent","password","123456","studentNo","20260001",
+                "nickname","邮箱同学","email",email,"emailCode",code);
+        mvc.perform(post("/api/auth/register").contentType(MediaType.APPLICATION_JSON)
+                        .content(json.writeValueAsString(registration)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.user.email").value("new.student@example.com"));
+        mvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON)
+                        .content(json.writeValueAsString(Map.of("username","NEW.STUDENT@example.com","password","123456"))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.token").isNotEmpty());
     }
     @Test void validatesProductPriceAndSupportsLocalImageUpload() throws Exception {
         String token=login("student");

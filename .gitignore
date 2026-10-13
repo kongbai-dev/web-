@@ -7,6 +7,8 @@ frontend/dist/
 .idea/
 .vscode/
 *.log
+.env
+!.env.example
 deliverables/**/*.tar
 deliverables/**/*.zip
 deliverables/**/*.zip.sha256
