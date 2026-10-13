@@ -27,6 +27,9 @@ images/campus-market-x64-images.tar
 docker-compose.yml
   三项服务的一键编排文件。
 
+.env.example
+  邮箱验证码 SMTP 配置模板。
+
 database/init/01-schema.sql
   MySQL 8 数据库结构和索引初始化脚本。
 
@@ -48,7 +51,19 @@ IMAGE_INFO.txt
 SHA256SUMS.txt
   镜像包、数据库脚本、录屏及关键文档的 SHA-256 校验值。
 
-四、Docker Compose 启动命令
+四、邮箱验证码服务配置
+
+复制配置模板并填写实际发件邮箱和 SMTP 授权码：
+
+Windows PowerShell：Copy-Item .env.example .env
+Linux/macOS：cp .env.example .env
+
+必填项：MAIL_USERNAME、MAIL_PASSWORD、MAIL_FROM。
+QQ 邮箱默认使用 smtp.qq.com:465 和 SSL；使用其他邮箱服务时，同时修改主机、端口和加密参数。
+.env 保存敏感凭据，不纳入 Git 仓库或公开提交材料。
+验证码有效期为 10 分钟，同一邮箱的发送间隔为 60 秒。
+
+五、Docker Compose 启动命令
 
 在本 README.txt 所在目录执行：
 
@@ -76,7 +91,7 @@ docker compose logs -f
 
 docker compose down
 
-五、镜像信息
+六、镜像信息
 
 campus-market-backend:1.0.0-amd64
 campus-market-frontend:1.0.0-amd64
@@ -90,7 +105,7 @@ docker image inspect mysql:8.4 --format "{{.Architecture}}/{{.Os}}"
 
 三张镜像的目标平台均为 amd64/linux。
 
-六、数据库与资源文件挂载
+七、数据库与资源文件挂载
 
 1. 数据库初始化脚本
 
@@ -114,7 +129,7 @@ Docker 卷：campus-market-x64_mysql-data
 
 商品上传图片保存在 resources/uploads/products，数据库迁移时与该目录共同迁移。
 
-七、演示账号
+八、演示账号
 
 以下账号密码均为 123456：
 
@@ -122,10 +137,10 @@ Docker 卷：campus-market-x64_mysql-data
 卖家：seller
 学生用户：student
 
-八、课程中印象最深刻的内容
+九、课程中印象最深刻的内容
 
 印象最深刻的是前端请求、后端事务与数据库约束组成的完整业务链路。一个商品交易操作同时涉及身份认证、订单状态机、事务边界、数据库行锁与唯一约束，各层协同才能保证并发场景下的数据一致性。
 
-九、课程改进建议
+十、课程改进建议
 
 增加一次覆盖 Docker Compose 部署、数据库备份恢复、日志排查、并发测试和基础安全配置的综合实践，使课程项目从功能实现进一步延伸到部署、验收和维护。

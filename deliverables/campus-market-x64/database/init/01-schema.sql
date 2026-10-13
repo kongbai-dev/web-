@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
   student_no VARCHAR(30),
   nickname VARCHAR(255),
   avatar VARCHAR(255),
-  email VARCHAR(255),
+  email VARCHAR(100),
   phone VARCHAR(255),
   campus VARCHAR(255),
   dorm_area VARCHAR(255),
@@ -21,7 +21,19 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at DATETIME(6),
   PRIMARY KEY (id),
   UNIQUE KEY uk_users_username (username),
-  UNIQUE KEY uk_users_student_no (student_no)
+  UNIQUE KEY uk_users_student_no (student_no),
+  UNIQUE KEY uk_users_email (email)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS email_verification_codes (
+  email VARCHAR(100) NOT NULL,
+  code_hash VARCHAR(255) NOT NULL,
+  expires_at DATETIME(6) NOT NULL,
+  last_sent_at DATETIME(6) NOT NULL,
+  attempts INT NOT NULL DEFAULT 0,
+  version BIGINT,
+  PRIMARY KEY (email),
+  KEY idx_email_codes_expires (expires_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS categories (
